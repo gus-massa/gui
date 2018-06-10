@@ -3685,7 +3685,7 @@
     ;; the algorithm may consider the same position
     ;; multiple times, so we track which positions that
     ;; have embedded editors that are already considered.
-    (define embedded-editors-considered (make-hash))
+    #;(define embedded-editors-considered (make-hash))
     
     (define (get-char _i)
       (define i (if forward? _i (- last-pos _i 1)))
@@ -3738,9 +3738,9 @@
            [(and recur-inside?
                  (is-a? latest-snip editor-snip%))
             (cond
-              [(hash-ref embedded-editors-considered i #f) #f]
+              #;[(hash-ref embedded-editors-considered i #f) #f]
               [else
-               (hash-set! embedded-editors-considered i #t)
+               #;(hash-set! embedded-editors-considered i #t)
                (let loop ([snip latest-snip])
                  (define ed (send snip get-editor))
                  (cond
