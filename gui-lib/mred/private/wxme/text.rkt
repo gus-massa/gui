@@ -3775,7 +3775,7 @@
     
     (define t (build-table word))
     (define word-len-minus-one (- (string-length word) 1))
-    
+   
     (let loop ([m start]
                [i 0])
       (define m-plus-i (+ m i))
@@ -3787,14 +3787,18 @@
             ;; found an embedded editor with a search result; transmit it
             (if just-one?
                 the-char
-                (cons the-char (loop (+ m 1) 0)))]
-           [(and (char? the-char) (char=? (string-ref word i) the-char))
+                (cons the-char (loop (+ m-plus-i 1) 0)))]
+           [(not (char? the-char))
+            ;; found an embedded editor without a search result
+            (loop (+ m-plus-i 1) 0)]
+           [(char=? (string-ref word i) the-char)
             (cond
               [(= i word-len-minus-one)
                (if just-one?
                    (convert-result m word forward? beginning-of-match?)
                    (cons (convert-result m word forward? beginning-of-match?)
-                         (loop (+ m 1) 0)))]
+                         (let ([t-i (vector-ref t (+ i 1))])
+                           (loop (- (+ m-plus-i 1) t-i) t-i))))]
               [else
                (loop m (+ i 1))])]
            [else
@@ -3803,7 +3807,7 @@
               [t-i
                (loop (- m-plus-i t-i) t-i)]
               [else
-               (loop (+ m 1) 0)])])]
+               (loop (+ m-plus-i 1) 0)])])]
         [else
          (if just-one? #f '())])))
   

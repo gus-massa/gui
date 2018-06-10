@@ -496,6 +496,7 @@
             '()))
   
   (expect (send (txt "aaa") find-string-all "a") '(0 1 2)))
+  (expect (send (txt "aaa") find-string-all "aa") '(0 1)))
 
 (let ()
   (define (slow-string-search search-str text)
