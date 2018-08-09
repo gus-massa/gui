@@ -3825,7 +3825,7 @@
            (vector-set! t pos (vector-ref t cnd))
            (loop (+ pos 1) (+ cnd 1))]
           [else
-           (vector-set! t pos (vector-ref t cnd))
+           (vector-set! t pos cnd)
            (let loop2 ([pos pos]
                        [cnd (vector-ref t cnd)])
              (cond
