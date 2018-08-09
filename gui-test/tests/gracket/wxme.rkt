@@ -43,8 +43,13 @@
 (define (done)
   (printf "\n~a tests\n" test-cnt)
   (if (zero? wrong-cnt)
-      (printf "all passed\n")
-      (eprintf "~s FAILED\n" wrong-cnt)))
+      (begin
+        (printf "all passed\n")
+        (flush-output))
+      (begin
+       (eprintf "~s FAILED\n" wrong-cnt)
+       (flush-output)
+       (exit 1))))
 
 ;; ----------------------------------------
 ;; String snips and lines
