@@ -69,8 +69,8 @@
 (expect (mline-get-line m20) 1)
 (expect (mline-get-position m00) 0)
 (expect (mline-get-position m20) 0)
-(mline-set-length m00 5)
-(mline-set-length m20 20)
+(void (mline-set-length m00 5))
+(void (mline-set-length m20 20))
 (expect (mline-get-position m00) 0)
 (expect (mline-get-position m20) 5)
 
@@ -82,7 +82,7 @@
 (define m5 (mline-insert m20 root-box #t))
 (mline-check-consistent (unbox root-box))
 
-(mline-set-length m5 10)
+(void (mline-set-length m5 10))
 
 (expect (mline-get-position m00) 0)
 (expect (mline-get-position m5) 5)
@@ -92,7 +92,7 @@
 (expect (mline-get-position m20) 5)
 
 (set! m5 (mline-insert m20 root-box #t))
-(mline-set-length m5 8)
+(void (mline-set-length m5 8))
 
 (expect (mline-get-position m00) 0)
 (expect (mline-get-position m5) 5)
@@ -122,7 +122,7 @@
 
 (define m05 (mline-insert m00 root-box #f))
 
-(mline-set-length m05 2)
+(void (mline-set-length m05 2))
 
 (expect (mline-get-line m00) 0)
 (expect (mline-get-line m05) 1)
