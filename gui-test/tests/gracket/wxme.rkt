@@ -421,14 +421,18 @@
   (expect (send (txt "xyz") do-find-string-all "xyz" 'backward 3 0 #t #t #t #f)
           3)
   
-  (let ([t1 (new text%)]
-        [t2 (new text%)])
-    (send t1 insert "abc")
-    (send t1 insert (new editor-snip% [editor t2]))
-    (send t1 insert "abc")
-    (send t2 insert "abc")
-    (expect (send t1 do-find-string-all "abc" 'forward 0 (send t1 last-position) #f #t #t #t)
-            (list 0 (list t2 0) 4)))
+  (let ([t (new text%)])
+    (send t insert "abc")
+    (send t insert "abc")
+    (send t insert "abc")
+    (expect (send t do-find-string-all "abc" 'forward 0 (send t last-position) #f #t #t #t)
+            '(0 3 6))
+    (expect (send t do-find-string-all "abc" 'backward (send t last-position) 0 #f #t #t #t)
+            '(9 6 3))
+    (expect (send t do-find-string-all "ca" 'forward 0 (send t last-position) #f #t #t #t)
+            '(2 5))
+    (expect (send t do-find-string-all "ca" 'backward (send t last-position) 0 #f #t #t #t)
+            '(7 4)))
   
   (let ([t1 (new text%)]
         [t2 (new text%)])
@@ -436,8 +440,24 @@
     (send t1 insert (new editor-snip% [editor t2]))
     (send t1 insert "abc")
     (send t2 insert "abc")
+    (expect (send t1 do-find-string-all "abc" 'forward 0 (send t1 last-position) #f #t #t #t)
+            (list 0 (list t2 0) 4))
     (expect (send t1 do-find-string-all "abc" 'backward (send t1 last-position) 0 #f #t #t #t)
-            (list 7 (list t2 3) 3)))
+            (list 7 (list t2 3) 3))
+    (expect (send t1 do-find-string-all "abca" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '())
+    (expect (send t1 do-find-string-all "cabc" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '()))
+  
+  (let ([t1 (new text%)]
+        [t2 (new text%)])
+    (send t1 insert "abc")
+    (send t1 insert (new editor-snip% [editor t2]))
+    (send t2 insert "abc")
+    (expect (send t1 do-find-string-all "abc" 'forward 0 (send t1 last-position) #f #t #t #t)
+            (list 0 (list t2 0)))
+    (expect (send t1 do-find-string-all "abc" 'backward (send t1 last-position) 0 #f #t #t #t)
+            (list (list t2 3) 3)))
   
   (let ([t1 (new text%)]
         [t2 (new text%)])
@@ -488,8 +508,12 @@
     (send t1 insert es)
     (send t1 insert "abc")
     (expect (send t1 do-find-string-all "abcd" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '())
+    (expect (send t1 do-find-string-all "abca" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '())
+    (expect (send t1 do-find-string-all "cabc" 'forward 0 (send t1 last-position) #f #t #t #t)
             '()))
-  
+    
   (let ([t1 (new text%)]
         [pb (new pasteboard%)])
     (send t1 insert "abc")
@@ -498,10 +522,16 @@
     (send pb insert (new editor-snip%))
     (send pb insert (new editor-snip%))
     (expect (send t1 do-find-string-all "abcd" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '())
+    (expect (send t1 do-find-string-all "abca" 'forward 0 (send t1 last-position) #f #t #t #t)
+            '())
+    (expect (send t1 do-find-string-all "cabc" 'forward 0 (send t1 last-position) #f #t #t #t)
             '()))
   
-  (expect (send (txt "aaa") find-string-all "a") '(0 1 2)))
-  (expect (send (txt "aaa") find-string-all "aa") '(0 1)))
+  (expect (send (txt "aaa") find-string-all "a") '(0 1 2))
+  (expect (send (txt "aaa") find-string-all "aa") '(0 1))
+  (expect (send (txt "aaa") find-string-all "aaa") '(0))
+  (expect (send (txt "aaa") find-string-all "aaaa") '()))
 
 (let ()
   (define (slow-string-search search-str text)
